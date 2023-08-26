@@ -32,12 +32,16 @@ const notifyToaster = (title: string, msg: string, id?: any) => {
       toast.info(<ToastElement title={title} msg={msg} />, { hideProgressBar: true });
       break;
     case 'loading':
-      tmpId = toast.loading(<ToastElement title={title} msg={msg} />); //, { hideProgressBar: true });
+      tmpId = toast.loading(<ToastElement title={title} msg={msg} />, { hideProgressBar: true });
       break;
     case 'update':
-      console.log('inside update id', id);
-      toast.update(id, { render: 'All is good', type: 'success', isLoading: false });
-      // toast.update(id, { render: msg, isLoading: false, autoClose: 2000 });
+      toast.update(id, {
+        render: msg,
+        type: 'success',
+        isLoading: false,
+        hideProgressBar: true,
+        autoClose: 2000,
+      });
       break;
     default:
       toast.success(<ToastElement title={title} msg={msg} />, { hideProgressBar: true });

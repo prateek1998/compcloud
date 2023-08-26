@@ -37,9 +37,7 @@ const FileUploader: React.FC = () => {
   const onDropAccepted = useCallback(async (acceptedFiles: any) => {
     let tmpFiles = [];
     let id = notifyToaster('loading', 'Please wait...');
-    console.log('before loop', id);
     for (let index = 0; index < acceptedFiles.length; index++) {
-      console.log('inside loop', id);
       const file = acceptedFiles[index];
       const formData = new FormData();
       formData.append('images', file);
@@ -52,16 +50,13 @@ const FileUploader: React.FC = () => {
         file['filePath'] = data.data.filePath;
         file['fileUrl'] = 'api/download/' + data.data.filePath.split('\\')[1];
       }
-      console.log('after file', file);
       tmpFiles.push(file);
     }
-    console.log('after loop', id);
-    notifyToaster('success', 'Files converted successfully', id);
+    notifyToaster('update', 'Files converted successfully', id);
     setFiles(tmpFiles);
   }, []);
 
   const onDropRejected = useCallback(async (rejectedFiles: any) => {
-    console.log('before loop', rejectedFiles);
     let file = rejectedFiles[0];
     notifyToaster('Error', file.errors[0].message);
   }, []);
@@ -121,18 +116,18 @@ const FileUploader: React.FC = () => {
         </div>
         <div className="rounded-full flex flex-grow justify-end  ">
           <div className="flex flex-col justify-items-center text-center">
-            <Tooltip message={"Download!"}>
-            <Button
-              classNames="flex justify-center"
-              onClick={() => (window.location.href = file.fileUrl)}
-            >
-              <AiOutlineDownload size="1.25rem" />
-            </Button>
-</Tooltip>
-<Tooltip message={"Upload to S3 Bucket!"}>
-            <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3">
-              <AiOutlineCloudUpload size="1.25rem" />
-            </Button>
+            <Tooltip message={'Download!'}>
+              <Button
+                classNames="flex justify-center"
+                onClick={() => (window.location.href = file.fileUrl)}
+              >
+                <AiOutlineDownload size="1.25rem" />
+              </Button>
+            </Tooltip>
+            <Tooltip message={'Upload to S3 Bucket!'}>
+              <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3">
+                <AiOutlineCloudUpload size="1.25rem" />
+              </Button>
             </Tooltip>
           </div>
         </div>
@@ -213,7 +208,7 @@ const FileUploader: React.FC = () => {
           <div className="flex justify-end mt-6 ">
             <Button
               onClick={handleRemoveAllFiles}
-              classNames="bg-red-700 mr-4 text-red-100 border-red-300 hover:text-red-700 hover:bg-red-50 "
+              classNames="bg-red-700 mr-4 text-red-100 border-red-300 hover:text-red-700 hover:bg-red-500 "
               variant="outlined"
             >
               Remove All
