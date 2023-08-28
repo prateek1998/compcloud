@@ -33,6 +33,6 @@ jobs:
           npm install
           rm -rf build
           npm run build
-          git add dist -f
+          git add build -f
           git commit -m "build files from github action"
           git push
