@@ -1,36 +1,38 @@
-#  Template React Deploy
+# This is a basic workflow to help you get started with Actions
 
-#  This template allows you to deploy your React app to an AWS EC2 Instance.
-image: node:16
+name: CI
 
-# Workflow Configuration
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
-pipelines:
-  pull-requests:
-    branches:
-      master:
-        - step:
-            name: Install dependencies
-            caches:  
-              - node
-            script:
-              - npm install
-        - step:
-            name: formatting the code
-            script:
-              # Run your linter of choice here
-              - npm run format
-            caches:
-              - node
-        - step:
-              name: Test and build
-              caches:
-                - node
-              script:
-                - rm -rf build
-                - npm run build
-                - git add build -f
-                - git commit -m "build files from github action"
-                - git push
-              artifacts:
-                - build/**
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+ # Runs a single command using the runners shell
+      - name: setup git config
+        run: |
+          git config user.name "Prateek Saini"
+          git config user.email "pratiiksaini@gmail.com"
+      # Runs a set of commands using the runners shell
+      - name: setup deployment
+        run: |
+          npm install
+          rm -rf build
+          npm run build
+          git add dist -f
+          git commit -m "build files from github action"
+          git push
