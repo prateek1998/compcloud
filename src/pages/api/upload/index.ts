@@ -34,9 +34,10 @@ const readFile = (
   return new Promise((resolve, reject) => {
     form.parse(req, async (error: any, fields: any, files: any) => {
       let fileExt: string = fields.fileExt[0];
+      let quality: number = fields.fileQuality[0];
       let newFilePath: string = path.join(filePath, uuidv4() + '.' + fileExt);
       let info: any = await Sharp(files.images[0].filepath)
-        .webp({ quality: 10 })
+        .webp({ quality: Number(quality) })
         .toFile(newFilePath); // (err, info) => { console.log(info) });
       info['originalSize'] = files.images[0].size;
       info['filePath'] = newFilePath;

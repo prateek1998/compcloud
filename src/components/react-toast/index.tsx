@@ -40,7 +40,7 @@ const notifyToaster = (title: string, msg: string, id?: any) => {
         type: 'success',
         isLoading: false,
         hideProgressBar: true,
-        autoClose: 2000,
+        autoClose: 1000,
       });
       break;
     default:

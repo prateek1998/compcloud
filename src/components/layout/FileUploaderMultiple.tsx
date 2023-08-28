@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
-import { AiOutlineCloudUpload, AiOutlineDownload } from 'react-icons/ai';
+import { AiOutlineCloudUpload, AiOutlineDownload, AiOutlineLink } from 'react-icons/ai';
 import notifyToaster from '@components/react-toast';
 import Button from '@components/Button';
 import Tooltip from '@components/Tooltip';
@@ -12,8 +12,10 @@ interface FileProp {
   name: string;
   type: string;
   size: number;
+  filePath: string;
   newSize: number;
   fileUrl: string;
+  fileLocation: string;
 }
 
 const fileOptions = [
@@ -33,7 +35,9 @@ const fileOptions = [
 
 const FileUploader: React.FC = () => {
   const [files, setFiles] = useState<FileProp[]>([]);
-  const [type, setType] = useState('webp');
+  const [type, setType] = useState<string>('webp');
+  const [quality, setQuality] = useState<string>('10');
+
   const onDropAccepted = useCallback(async (acceptedFiles: any) => {
     let tmpFiles = [];
     let id = notifyToaster('loading', 'Please wait...');
@@ -42,6 +46,7 @@ const FileUploader: React.FC = () => {
       const formData = new FormData();
       formData.append('images', file);
       formData.append('fileExt', type);
+      formData.append('fileQuality', quality);
       let { data }: any = await axios
         .post('/api/upload', formData)
         .catch((err) => console.log('err', err));
@@ -54,7 +59,7 @@ const FileUploader: React.FC = () => {
     }
     notifyToaster('update', 'Files converted successfully', id);
     setFiles(tmpFiles);
-  }, []);
+  }, [type, quality]);
 
   const onDropRejected = useCallback(async (rejectedFiles: any) => {
     let file = rejectedFiles[0];
@@ -93,6 +98,29 @@ const FileUploader: React.FC = () => {
     setFiles([...filtered]);
   };
 
+  const handleLinkUpdate = (filePath: string, fileLocation: string) => {
+    const filtered = files.map((i: FileProp) => {
+      if (i.filePath === filePath)
+        i['fileLocation'] = fileLocation;
+      return i
+    })
+    setFiles(filtered);
+  }
+
+  const handleCloudUpload = async (file: any) => {
+    let payload = {
+      filePath: file.filePath
+    }
+    let id = notifyToaster('loading', 'Please wait file uploading...');
+    let { data }: any = await axios
+      .post('/api/upload/cloud', payload)
+      .catch((err) => console.log('err', err));
+    if (data.success) {
+      handleLinkUpdate(data.data.path, data.data.location);
+      notifyToaster('update', 'Files Uploaded successfully', id);
+    }
+  }
+
   const calculateSize = (size: number) =>
     Math.round(size / 100) / 10 > 1000
       ? `${(Math.round(size / 100) / 10000).toFixed(1)} mb`
@@ -124,11 +152,27 @@ const FileUploader: React.FC = () => {
                 <AiOutlineDownload size="1.25rem" />
               </Button>
             </Tooltip>
-            <Tooltip message={'Upload to S3 Bucket!'}>
-              <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3">
-                <AiOutlineCloudUpload size="1.25rem" />
-              </Button>
-            </Tooltip>
+            {
+              !file.fileLocation?.length ?
+                <Tooltip message={'Upload to S3 Bucket!'}>
+                  <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
+                    onClick={() => handleCloudUpload(file)}
+                  >
+                    <AiOutlineCloudUpload size="1.25rem" />
+                  </Button>
+                </Tooltip>
+                :
+                <Tooltip message={'Copy Link'}>
+                  <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
+                    onClick={() => {
+                      notifyToaster('Info', 'Link Copied ');
+                      navigator.clipboard.writeText(file.fileLocation)
+                    }}
+                  >
+                    <AiOutlineLink size="1.25rem" />
+                  </Button>
+                </Tooltip>
+            }
           </div>
         </div>
         {/* <div onClick={() => handleRemoveFile(file)} className='rounded-full flex flex-grow justify-end  '>
@@ -150,6 +194,12 @@ const FileUploader: React.FC = () => {
   const handleLinkClick = (event: SyntheticEvent) => {
     event.preventDefault();
   };
+  const handleDownloadAll = () => {
+    files.map(file => {
+      window.open(file.fileUrl)
+      // window.location.href = file.fileUrl
+    })
+  }
 
   const handleRemoveAllFiles = () => {
     setFiles([]);
@@ -163,6 +213,15 @@ const FileUploader: React.FC = () => {
           <p className="text-gray-700 text-sm">Note: Allowed *.jpeg, *.jpg, *.png, *.gif</p>
         </div>
         <div className="flex items-center pt-3 md:pt-0 items-center justify-center">
+          <div className="font-medium mr-1 text-xl text-gray-700 mb-2 pt-2">Quality:</div>
+          <input
+            type='number'
+            min="0"
+            max="100"
+            value={quality}
+            onChange={(e) => setQuality((e.target.value))}
+            className="border-2 border-primary-500 rounded-md text-primary-700 bg-primary-300 focus:outline-0 px-1 mr-2 py-2 font-bold"
+          />
           <div className="font-medium mr-5 text-xl text-gray-700 mb-2 pt-2">Convert to:</div>
           <select
             value={type}
@@ -213,7 +272,7 @@ const FileUploader: React.FC = () => {
             >
               Remove All
             </Button>
-            <Button variant="contained">Upload Files</Button>
+            <Button variant="contained" onClick={handleDownloadAll}>Download All Files</Button>
           </div>
         </Fragment>
       ) : null}

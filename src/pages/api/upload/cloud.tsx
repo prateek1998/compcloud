@@ -1,74 +1,48 @@
-import { NextApiHandler, NextApiRequest } from 'next';
-import formidable from 'formidable';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import fs, { existsSync } from 'fs';
-import Sharp from 'sharp';
 
-let filePath = './uploads';
+const accessKeyId: any = process.env.AWS_ACCESS_KEY_ID;
+const secretAccessKey: any = process.env.AWS_SECRET_ACCESS_KEY;
+const region = process.env.S3_REGION;
+const Bucket = process.env.S3_BUCKET;
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-const readFile = (
-  req: NextApiRequest,
-  saveLocally?: boolean
-): Promise<{
-  fields: formidable.Fields;
-  files: formidable.Files;
-  fileDetails: formidable.Fields;
-}> => {
-  const options: formidable.Options = {};
-  if (saveLocally) {
-    options.uploadDir = path.join(filePath);
-    options.filename = (name, ext, path, form) => {
-      let fileExt = path.originalFilename?.split('.')[1];
-      return uuidv4() + '.' + fileExt;
-      //Date.now().toString() + "_" + path.originalFilename
-    };
-  }
-  options.maxFileSize = 4000 * 1024 * 1024;
-  const form = formidable(options);
-  return new Promise((resolve, reject) => {
-    form.parse(req, async (error: any, fields: any, files: any) => {
-      let fileExt: string = fields.fileExt[0];
-      let newFilePath: string = path.join(filePath, uuidv4() + '.' + fileExt);
-      let info: any = await Sharp(files.images[0].filepath)
-        .webp({ quality: 10 })
-        .toFile(newFilePath); // (err, info) => { console.log(info) });
-      info['originalSize'] = files.images[0].size;
-      info['filePath'] = newFilePath;
-      if (error) reject(error);
-      resolve({ fields, files, fileDetails: info });
-    });
-  });
-};
+let filePath = 'uploads/';
 
-const handler: NextApiHandler = async (req, res) => {
-  if (req.method === 'POST') {
-    // step 1: check images folder exist or not
-    const isUploadDirExist = existsSync(filePath);
-    if (!isUploadDirExist) {
-      fs.mkdirSync(filePath);
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method === 'POST') {
+        let fileLink = req.body.filePath;
+        if (!existsSync(fileLink)) {
+            return res.status(200).json({
+                status: 0,
+                errorMsg: "File not found"
+            });
+        };
+        let content = fs.readFileSync(fileLink);
+        let fileName = fileLink.split('\\')[1];
+        const command: PutObjectCommand = new PutObjectCommand({
+            Bucket: Bucket,
+            Key: filePath + fileName,
+            Body: content,
+            ContentType: 'image/jpeg'
+        });
+        let s3Client = new S3Client({
+            region: region,
+            credentials: {
+                accessKeyId: accessKeyId,
+                secretAccessKey: secretAccessKey
+            }
+        });
+        const data = await s3Client.send(command);
+        // console.log(data);
+        let imageUrl = Bucket + "/" + filePath + fileName;
+        return res.status(200).json({
+            success: 1,
+            data: {
+                message: "successfully uploaded file to S3",
+                location: imageUrl,
+                path: fileLink
+            }
+        });
     }
-    // step 2: upload images to this folder then we need to compress this images
-    let { fileDetails }: any = await readFile(req, false).catch((err) => {
-      console.log('error in conversion', err);
-    });
-    let respData = {
-      success: 1,
-      data: {
-        originalSize: fileDetails.originalSize,
-        finalSize: fileDetails.size,
-        filePath: fileDetails.filePath,
-        height: fileDetails.height,
-        width: fileDetails.width,
-      },
-    };
-    return res.send(respData);
-  }
-};
-
-export default handler;
+}
