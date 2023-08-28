@@ -154,8 +154,8 @@ const FileUploader: React.FC = () => {
             </Tooltip>
             {
               !file.fileLocation?.length ?
-                <Tooltip message={'Upload to S3 Bucket!'}>
-                  <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
+                                                              <Tooltip message={'Upload to S3 Bucket!'}>
+                                                         <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
                     onClick={() => handleCloudUpload(file)}
                   >
                     <AiOutlineCloudUpload size="1.25rem" />
