@@ -1,0 +1,36 @@
+#  Template React Deploy
+
+#  This template allows you to deploy your React app to an AWS EC2 Instance.
+image: node:16
+
+# Workflow Configuration
+
+pipelines:
+  pull-requests:
+    branches:
+      master:
+        - step:
+            name: Install dependencies
+            caches:  
+              - node
+            script:
+              - npm install
+        - step:
+            name: formatting the code
+            script:
+              # Run your linter of choice here
+              - npm run format
+            caches:
+              - node
+        - step:
+              name: Test and build
+              caches:
+                - node
+              script:
+                - rm -rf build
+                - npm run build
+                - git add build -f
+                - git commit -m "build files from github action"
+                - git push
+              artifacts:
+                - build/**
