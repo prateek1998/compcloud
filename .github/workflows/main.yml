@@ -50,7 +50,7 @@ jobs:
         run: |       
           sudo mkdir -p /tmp/build/image-converter/${{github.sha}}
           npm run build
-          sudo tar -czf /tmp/builds/image-converter/${{github.sha}}/image-converter_.tgz -C .next/ .
+          sudo tar -cvzf /tmp/builds/image-converter/${{github.sha}}/image-converter_.tar.gz -C /.next/ .
       
           # git add .next -f
           # git commit -m "build files from github action"
