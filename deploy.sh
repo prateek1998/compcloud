@@ -8,7 +8,7 @@ echo -e $PWD
 
 echo -e '\e[1m\e[34mPulling code from remote...\e[0m\n'
 
-git pull origin master
+git pull origin main
 
 echo -e '\e[1m\e[34mAll done now!\e[0m\n'
 
