@@ -33,7 +33,7 @@ jobs:
             npm install
             rm -rf .next
       - name: Prettier
-        run: npx prettier --write **/*.js
+        run: npx prettier --write \"src/**\""
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: setup deployment
