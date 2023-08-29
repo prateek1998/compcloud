@@ -32,8 +32,12 @@ jobs:
         run: |
             npm install
             rm -rf .next
-      - name: Formaiting the code
-        run: npm run format
+      - name: Code formatting
+        run: |
+          npm run format
+          git add . -f
+          git commit -m "Code formatting from github action"
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: setup deployment
