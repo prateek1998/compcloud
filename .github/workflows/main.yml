@@ -59,5 +59,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             echo "Nice Job!!!"
-            bash /opt/git/my-repository/update.sh
-          
+            bash ~/compcloud/deploy.sh   
