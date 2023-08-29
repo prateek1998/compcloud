@@ -1,0 +1,11 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/api/download/[id]": "pages/api/download/[id].js",
+  "/api/hello": "pages/api/hello.js",
+  "/api/upload/cloud": "pages/api/upload/cloud.js",
+  "/": "pages/index.html",
+  "/api/upload": "pages/api/upload.js",
+  "/404": "pages/404.html"
+}
