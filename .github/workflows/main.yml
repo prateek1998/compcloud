@@ -35,7 +35,7 @@ jobs:
       - name: Code formatting
         run: |
           npm run format
-          git add . -f
+          git add .
           git commit -m "Code formatting from github action"
           git push
         env:
