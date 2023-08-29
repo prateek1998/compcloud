@@ -51,14 +51,13 @@ jobs:
           # git add .next -f
           # git commit -m "build files from github action"
           # git push
-       steps:
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          echo "Nice Job!!!"
-          bash /opt/git/my-repository/update.sh
-        
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "Nice Job!!!"
+            bash /opt/git/my-repository/update.sh
+          
