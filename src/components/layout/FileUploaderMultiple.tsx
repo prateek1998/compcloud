@@ -38,28 +38,31 @@ const FileUploader: React.FC = () => {
   const [type, setType] = useState<string>('webp');
   const [quality, setQuality] = useState<string>('10');
 
-  const onDropAccepted = useCallback(async (acceptedFiles: any) => {
-    let tmpFiles = [];
-    let id = notifyToaster('loading', 'Please wait...');
-    for (let index = 0; index < acceptedFiles.length; index++) {
-      const file = acceptedFiles[index];
-      const formData = new FormData();
-      formData.append('images', file);
-      formData.append('fileExt', type);
-      formData.append('fileQuality', quality);
-      let { data }: any = await axios
-        .post('/api/upload', formData)
-        .catch((err) => console.log('err', err));
-      if (data.success) {
-        file['newSize'] = data.data.finalSize;
-        file['filePath'] = data.data.filePath;
-        file['fileUrl'] = 'api/download/' + data.data.filePath.split('\\')[1];
+  const onDropAccepted = useCallback(
+    async (acceptedFiles: any) => {
+      let tmpFiles = [];
+      let id = notifyToaster('loading', 'Please wait...');
+      for (let index = 0; index < acceptedFiles.length; index++) {
+        const file = acceptedFiles[index];
+        const formData = new FormData();
+        formData.append('images', file);
+        formData.append('fileExt', type);
+        formData.append('fileQuality', quality);
+        let { data }: any = await axios
+          .post('/api/upload', formData)
+          .catch((err) => console.log('err', err));
+        if (data.success) {
+          file['newSize'] = data.data.finalSize;
+          file['filePath'] = data.data.filePath;
+          file['fileUrl'] = 'api/download/' + data.data.filePath.split('\\')[1];
+        }
+        tmpFiles.push(file);
       }
-      tmpFiles.push(file);
-    }
-    notifyToaster('update', 'Files converted successfully', id);
-    setFiles(tmpFiles);
-  }, [type, quality]);
+      notifyToaster('update', 'Files converted successfully', id);
+      setFiles(tmpFiles);
+    },
+    [type, quality]
+  );
 
   const onDropRejected = useCallback(async (rejectedFiles: any) => {
     let file = rejectedFiles[0];
@@ -100,17 +103,16 @@ const FileUploader: React.FC = () => {
 
   const handleLinkUpdate = (filePath: string, fileLocation: string) => {
     const filtered = files.map((i: FileProp) => {
-      if (i.filePath === filePath)
-        i['fileLocation'] = fileLocation;
-      return i
-    })
+      if (i.filePath === filePath) i['fileLocation'] = fileLocation;
+      return i;
+    });
     setFiles(filtered);
-  }
+  };
 
   const handleCloudUpload = async (file: any) => {
     let payload = {
-      filePath: file.filePath
-    }
+      filePath: file.filePath,
+    };
     let id = notifyToaster('loading', 'Please wait file uploading...');
     let { data }: any = await axios
       .post('/api/upload/cloud', payload)
@@ -119,7 +121,7 @@ const FileUploader: React.FC = () => {
       handleLinkUpdate(data.data.path, data.data.location);
       notifyToaster('update', 'Files Uploaded successfully', id);
     }
-  }
+  };
 
   const calculateSize = (size: number) =>
     Math.round(size / 100) / 10 > 1000
@@ -152,27 +154,28 @@ const FileUploader: React.FC = () => {
                 <AiOutlineDownload size="1.25rem" />
               </Button>
             </Tooltip>
-            {
-              !file.fileLocation?.length ?
-                                                              <Tooltip message={'Upload to S3 Bucket!'}>
-                                                         <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
-                    onClick={() => handleCloudUpload(file)}
-                  >
-                    <AiOutlineCloudUpload size="1.25rem" />
-                  </Button>
-                </Tooltip>
-                :
-                <Tooltip message={'Copy Link'}>
-                  <Button classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
-                    onClick={() => {
-                      notifyToaster('Info', 'Link Copied ');
-                      navigator.clipboard.writeText(file.fileLocation)
-                    }}
-                  >
-                    <AiOutlineLink size="1.25rem" />
-                  </Button>
-                </Tooltip>
-            }
+            {!file.fileLocation?.length ? (
+              <Tooltip message={'Upload to S3 Bucket!'}>
+                <Button
+                  classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
+                  onClick={() => handleCloudUpload(file)}
+                >
+                  <AiOutlineCloudUpload size="1.25rem" />
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip message={'Copy Link'}>
+                <Button
+                  classNames="bg-blue-700 border-blue-600 hover:border-blue-500 mt-3"
+                  onClick={() => {
+                    notifyToaster('Info', 'Link Copied ');
+                    navigator.clipboard.writeText(file.fileLocation);
+                  }}
+                >
+                  <AiOutlineLink size="1.25rem" />
+                </Button>
+              </Tooltip>
+            )}
           </div>
         </div>
         {/* <div onClick={() => handleRemoveFile(file)} className='rounded-full flex flex-grow justify-end  '>
@@ -195,11 +198,11 @@ const FileUploader: React.FC = () => {
     event.preventDefault();
   };
   const handleDownloadAll = () => {
-    files.map(file => {
-      window.open(file.fileUrl)
+    files.map((file) => {
+      window.open(file.fileUrl);
       // window.location.href = file.fileUrl
-    })
-  }
+    });
+  };
 
   const handleRemoveAllFiles = () => {
     setFiles([]);
@@ -215,11 +218,11 @@ const FileUploader: React.FC = () => {
         <div className="flex items-center pt-3 md:pt-0 items-center justify-center">
           <div className="font-medium mr-1 text-xl text-gray-700 mb-2 pt-2">Quality:</div>
           <input
-            type='number'
+            type="number"
             min="0"
             max="100"
             value={quality}
-            onChange={(e) => setQuality((e.target.value))}
+            onChange={(e) => setQuality(e.target.value)}
             className="border-2 border-primary-500 rounded-md text-primary-700 bg-primary-300 focus:outline-0 px-1 mr-2 py-2 font-bold"
           />
           <div className="font-medium mr-5 text-xl text-gray-700 mb-2 pt-2">Convert to:</div>
@@ -272,7 +275,9 @@ const FileUploader: React.FC = () => {
             >
               Remove All
             </Button>
-            <Button variant="contained" onClick={handleDownloadAll}>Download All Files</Button>
+            <Button variant="contained" onClick={handleDownloadAll}>
+              Download All Files
+            </Button>
           </div>
         </Fragment>
       ) : null}
