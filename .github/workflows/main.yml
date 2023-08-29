@@ -32,9 +32,12 @@ jobs:
         run: |
             npm install
             rm -rf .next
+      - name: Prettier
+        run: npx prettier --write **/*.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: setup deployment
         run: |       
-          npm run format
           npm run build
           git add .next -f
           git commit -m "build files from github action"
