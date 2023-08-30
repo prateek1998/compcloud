@@ -52,7 +52,17 @@ jobs:
           # git commit -m "build files from github action"
           # git push
           sudo mkdir -p /tmp/compcloud/${{github.sha}}
-          sudo tar -czf /tmp/compcloud/${{github.sha}}/tasks-1_test.tgz -C dist/ .
+          sudo tar -czf /tmp/compcloud/${{github.sha}}/compcloud_build.tgz -C dist/ .
+
+      - name: uploading files via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "/tmp/compcloud/${{github.sha}}/compcloud_build"
+          target: "~/compcloud/test"
+
       # - name: executing remote ssh commands using password
       #   uses: appleboy/ssh-action@master
       #   with:
