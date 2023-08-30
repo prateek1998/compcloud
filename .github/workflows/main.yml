@@ -48,7 +48,7 @@ jobs:
       - name: setup deployment
         run: |       
           npm run build
-          git add .next -f
+          # git add .next -f
           # git commit -m "build files from github action"
           # git push
           sudo mkdir -p /tmp/compcloud/${{github.sha}}
