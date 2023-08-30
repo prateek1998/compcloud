@@ -52,7 +52,7 @@ jobs:
           # git push
           sudo mkdir -p /tmp/${{github.sha}}
           sudo cp -r dist /tmp/${{github.sha}}
-          sudo tar -czf /tmp/${{github.sha}}/compcloud_build.tgz -C /dist .
+          sudo tar -czf /tmp/${{github.sha}}/compcloud_build.tgz -C /tmp/${{github.sha}}/dist .
           
       - name: uploading files via ssh password
         uses: appleboy/scp-action@master
