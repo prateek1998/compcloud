@@ -51,7 +51,7 @@ jobs:
           # git commit -m "build files from github action"
           # git push
           sudo mkdir -p /tmp/${{github.sha}}
-          sudo cp -r /dist /tmp/${{github.sha}}
+          sudo cp -r dist /tmp/${{github.sha}}
           sudo tar -czf /tmp/${{github.sha}}/compcloud_build.tgz -C /dist .
           
       - name: uploading files via ssh password
