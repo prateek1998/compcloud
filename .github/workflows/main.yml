@@ -58,7 +58,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "compcloud_build.tgz"
-          target: "~/compcloud/"
+          target: "~/compcloud/tmp"
   
   # Deployment job
   deploy:
