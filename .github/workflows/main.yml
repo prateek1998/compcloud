@@ -37,26 +37,28 @@ jobs:
         run: |
             npm install
             rm -rf .next
-      - name: Code formatting
-        run: |
-          npm run format
-          git add .
-          # git commit -m "Code formatting from github action"
-          # git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Code formatting
+      #   run: |
+      #     npm run format
+      #     git add .
+      #     git commit -m "Code formatting from github action"
+      #     git push
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: setup deployment
         run: |       
           npm run build
-          # git add .next -f
+          git add .next -f
           # git commit -m "build files from github action"
           # git push
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            echo "Nice Job!!!"
-            bash ~/compcloud/deploy.sh   
+          sudo mkdir -p /tmp/compcloud/${{github.sha}}
+          sudo tar -czf /tmp/compcloud/${{github.sha}}/tasks-1_test.tgz -C dist/ .
+      # - name: executing remote ssh commands using password
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     key: ${{ secrets.SSH_KEY }}
+      #     script: |
+      #       echo "Nice Job!!!"
+      #       bash ~/compcloud/deploy.sh   
