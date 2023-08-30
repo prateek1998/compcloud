@@ -28,7 +28,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
       - name: setup git config
         run: |
           git config user.name "Prateek Saini"
@@ -48,20 +47,20 @@ jobs:
       - name: setup deployment
         run: |       
           npm run build
-          git add .
-          git commit -m "build files from github action"
-          git push
+          # git add .next -f
+          # git commit -m "build files from github action"
+          # git push
           sudo mkdir -p /tmp/compcloud/${{github.sha}}
           sudo tar -czf /tmp/compcloud/${{github.sha}}/compcloud_build.tgz -C dist/ .
 
-      # - name: uploading files via ssh password
-      #   uses: appleboy/scp-action@master
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     key: ${{ secrets.SSH_KEY }}
-      #     source: "/tmp/compcloud/${{github.sha}}/compcloud_build"
-      #     target: "~/compcloud/test"
+      - name: uploading files via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "/tmp/compcloud/${{github.sha}}/compcloud_build.tgz"
+          target: "~/compcloud/test"
 
       # - name: executing remote ssh commands using password
       #   uses: appleboy/ssh-action@master
