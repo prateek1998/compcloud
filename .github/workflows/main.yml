@@ -52,15 +52,15 @@ jobs:
           # git push
           sudo mkdir -p /tmp/${{github.sha}}
           sudo cp -r dist /tmp/${{github.sha}}
-          sudo tar -czf /tmp/${{github.sha}}/compcloud_build.tgz -C /tmp/${{github.sha}}/dist .
-          sudo ls /tmp/${{github.sha}}/
+          sudo tar -czf compcloud_build.tgz -C /tmp/${{github.sha}}/dist .
+          # sudo ls /tmp/${{github.sha}}/
       - name: uploading files via ssh password
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "/tmp/${{github.sha}}/compcloud_build.tgz"
+          source: "compcloud_build.tgz"
           target: "~/compcloud/test"
 
       # - name: executing remote ssh commands using password
