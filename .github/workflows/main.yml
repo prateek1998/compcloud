@@ -52,7 +52,6 @@ jobs:
           # git push
           sudo mkdir -p /tmp/${{github.sha}}
           sudo cp -r dist /tmp/${{github.sha}}
-          sudo ls /tmp/${{github.sha}}
           sudo tar -czf /tmp/${{github.sha}}/compcloud_build.tgz -C /tmp/${{github.sha}}/dist .
           
       - name: uploading files via ssh password
@@ -61,7 +60,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "/tmp/compcloud/${{github.sha}}/compcloud_build.tgz"
+          source: "/tmp/${{github.sha}}/compcloud_build.tgz"
           target: "~/compcloud/test"
 
       # - name: executing remote ssh commands using password
