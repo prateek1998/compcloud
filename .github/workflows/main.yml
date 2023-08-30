@@ -57,8 +57,8 @@ jobs:
       - name: uploading files via ssh password
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "/tmp/compcloud/${{github.sha}}/compcloud_build"
           target: "~/compcloud/test"
