@@ -15,8 +15,8 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@components*": ["./src/components*"],
-      "@styles*": ["./src/styles*"]
+      "components*": ["./src/components*"],
+      "styles*": ["./src/styles*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/FileUploaderMultiple.js"],

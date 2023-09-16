@@ -6,8 +6,7 @@ const accessKeyId: any = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey: any = process.env.AWS_SECRET_ACCESS_KEY;
 const region = process.env.S3_REGION;
 const Bucket = process.env.S3_BUCKET;
-
-let filePath = 'uploads/';
+const filePath = process.env.File_Path;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
@@ -35,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     const data = await s3Client.send(command);
     // console.log(data);
-    let imageUrl = Bucket + '/' + filePath + fileName;
+    let imageUrl = 'https://' + Bucket + '/' + filePath + fileName;
     return res.status(200).json({
       success: 1,
       data: {

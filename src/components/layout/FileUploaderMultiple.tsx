@@ -4,9 +4,9 @@ import Link from 'next/link';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import { AiOutlineCloudUpload, AiOutlineDownload, AiOutlineLink } from 'react-icons/ai';
-import notifyToaster from '@components/react-toast';
-import Button from '@components/Button';
-import Tooltip from '@components/Tooltip';
+import notifyToaster from 'components/react-toast';
+import Button from 'components/Button';
+import Tooltip from 'components/Tooltip';
 
 interface FileProp {
   name: string;
