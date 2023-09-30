@@ -1,6 +1,7 @@
 # CompCloud: Image Optimization and S3 Upload
 
-![CompCloud Logo](https://example.com/compcloud-logo.png)
+![Screenshot 2023-09-30 163537](https://github.com/prateek1998/compcloud/assets/37973089/51e7a62f-0854-4cf6-a68d-5239e9dcee8c)
+
 
 CompCloud is a simple and efficient solution for optimizing your images and seamlessly uploading them to an Amazon S3 bucket. This open-source project simplifies the process of image optimization, reducing file sizes while maintaining quality, and automates the task of transferring these optimized images to your S3 storage. Whether you're a developer looking to streamline image handling for your web application or a content creator seeking an easy way to optimize and store images in the cloud, CompCloud has you covered.
 
@@ -78,6 +79,14 @@ File_Path = /path/to/images/
    ```
 
 ## Screen Shots
+![Screenshot 2023-09-30 154552](https://github.com/prateek1998/compcloud/assets/37973089/9b8ca598-6f37-4a8e-a344-70069fcc2da7)
+![Screenshot 2023-09-30 163613](https://github.com/prateek1998/compcloud/assets/37973089/5bbf3cc2-ea87-4a61-b907-39d92859d108)
+![Screenshot 2023-09-30 163709](https://github.com/prateek1998/compcloud/assets/37973089/17d2ef83-1793-4597-96e6-6f656f608798)
+**File Converted successfully**
+![Screenshot 2023-09-30 163636](https://github.com/prateek1998/compcloud/assets/37973089/86fb72fb-f030-4857-ac83-a7ba125e7a6d)
+**File uploading to S3 bucket started**
+![Screenshot 2023-09-30 163804](https://github.com/prateek1998/compcloud/assets/37973089/87716f8d-fb29-42b1-8a7c-d183661eddad)
+**File successfully uploaded to S3 bucket, you can easily copy the link**
 
 
 ## Contributing
